@@ -293,13 +293,17 @@ async function run() {
 	// Continuely attempts to press the Checkout/Continue checkout buttons, until getting to last checkout button
 	// This way no time is wasted in saying "Wait 10s" after pressing a button, no easy way to wait for networkidle after an ajax request
 	while (true) {
+		//logger.trace("Inside while looppppp")
 		try {
 			let button
 			
 			if (page.url().includes("Cart")) {
+				logger.trace("Inside secure checkout button thing")
 				button = await page.waitForXPath("//button[contains(., 'Secure Checkout')]", { timeout: 1000 })
 			} else if (page.url().includes("checkout")) {
-				button = await page.waitForXPath("//button[contains(., 'Continue to')]", { timeout: 1000 })
+				//button = await page.waitForXPath("//button[contains(., 'Continue to')]", { timeout: 1000 })
+				await inputCVV(page)
+				button = await page.waitForSelector("#btnCreditCard", { timeout: 500 })
 			} else {
 				await page.waitForTimeout(1000)
 				continue
